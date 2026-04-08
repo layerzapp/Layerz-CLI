@@ -38,14 +38,12 @@ SwiftTerm이 이를 파싱해 `hostCurrentDirectoryUpdate(source:directory:)`를
 zsh chpwd → OSC 7 이스케이프 → SwiftTerm 파싱 → Coordinator 콜백 → AppState 업데이트
 ```
 
-### 3. 에디터: WKWebView + CodeMirror 5 (CDN)
-에디터는 WKWebView에서 `editor.html`을 로드하는 방식이다.
-- Swift → JS: `webView.evaluateJavaScript("setContent(jsonString, ext)")`
-- JS → Swift: `window.webkit.messageHandlers.contentChanged.postMessage(text)`
-- Cmd+S: JS extraKey가 `saveRequested` 메시지 핸들러를 호출
-- **오프라인 폴백**: CDN 로드 실패 시 `activateFallback()`이 plain textarea를 활성화
-
-콘텐츠를 Swift에서 JS로 넘길 때 항상 `JSONEncoder().encode(content)` 후 전달한다 (백슬래시/백틱 이스케이프 안전).
+### 3. 에디터: NSTextView + SyntaxHighlighter (네이티브)
+에디터는 NSTextView 기반 네이티브 구현이다. 외부 의존성(CDN, WKWebView) 없음.
+- `SyntaxHighlighter`: 정규식 기반 토큰화, 언어별 패턴 (Swift, Python, JS, Go, Rust 등 15개 언어)
+- `LineNumberRulerView`: NSRulerView 서브클래스로 줄 번호 표시
+- `EditorSettings`: 폰트 크기, 줄바꿈, 줄 번호 표시 등 사용자 설정 (UserDefaults 영속화)
+- 변경 감지: NSTextViewDelegate.textDidChange → 디바운싱 → 하이라이팅 재적용
 
 ### 4. 파일 브라우저: FileManager + NSWorkspace 아이콘
 `FileManager.contentsOfDirectory`는 `DispatchQueue.global`에서 비동기 실행,
@@ -70,12 +68,11 @@ zsh chpwd → OSC 7 이스케이프 → SwiftTerm 파싱 → Coordinator 콜백 
 | `TerminalPaneView.swift` | SwiftTerm NSViewRepresentable 래퍼. ZDOTDIR, OSC 7, 입력소스 전환 |
 | `FileBrowserView.swift` | 파일 목록 SwiftUI List. FileItem 모델, DirectoryWatcher 포함 |
 | `EditorPaneView.swift` | 에디터 툴바 + FileViewMode 분기 (code/image/pdf) |
-| `CodeEditorView.swift` | WKWebView + CodeMirror. 콘텐츠 동기화, 설정 적용 |
+| `CodeEditorView.swift` | NSTextView 기반 네이티브 코드 에디터. SyntaxHighlighter, LineNumberRulerView 포함 |
 | `MarkdownPreviewView.swift` | WKWebView + marked.js HTML 렌더러 |
 | `ImagePreviewView.swift` | NSScrollView + NSImageView 이미지 미리보기 |
 | `PDFPreviewView.swift` | PDFKit 기반 PDF 미리보기 |
 | `SettingsView.swift` | 에디터 환경 설정 UI (Cmd+,) |
-| `editor.html` | CodeMirror 5 에디터 HTML (검색, 접기, 다중 테마 지원) |
 | `project.yml` | XcodeGen 설정. 패키지 의존성 및 빌드 설정 |
 
 ---

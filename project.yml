@@ -16,10 +16,6 @@ targets:
     platform: macOS
     sources:
       - path: Sources
-        excludes:
-          - "Resources/**"
-      - path: Sources/Resources/editor.html
-        buildPhase: resources
     info:
       path: Info.plist
       properties:
