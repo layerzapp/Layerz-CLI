@@ -7,7 +7,14 @@ extension Notification.Name {
 }
 
 class AppState: ObservableObject {
-    @Published var currentDirectory: URL = URL(fileURLWithPath: NSHomeDirectory())
+    @Published var currentDirectory: URL = URL(fileURLWithPath: NSHomeDirectory()) {
+        didSet {
+            // Keep the active tab's directory in sync
+            if let activeTab = tabs.first(where: { $0.id == activeTabID }) {
+                activeTab.currentDirectory = currentDirectory
+            }
+        }
+    }
     @Published var openedFile: URL? = nil
     @Published var fileContent: String = ""
     @Published var isDirty: Bool = false
@@ -72,7 +79,15 @@ class AppState: ObservableObject {
     }
 
     func selectTab(_ id: UUID) {
+        // Save current directory to the outgoing tab
+        if let outgoing = tabs.first(where: { $0.id == activeTabID }) {
+            outgoing.currentDirectory = currentDirectory
+        }
         activeTabID = id
+        // Restore current directory from the incoming tab
+        if let incoming = tabs.first(where: { $0.id == id }) {
+            currentDirectory = incoming.currentDirectory
+        }
     }
 
     @objc private func handleSaveNotification() {
