@@ -10,27 +10,18 @@ struct CodeEditorView: NSViewRepresentable {
     }
 
     func makeNSView(context: Context) -> NSScrollView {
-        let scrollView = NSScrollView()
+        // Use the system factory method — creates a properly wired ScrollView + TextView
+        let scrollView = NSTextView.scrollableTextView()
+        guard let textView = scrollView.documentView as? NSTextView else {
+            return scrollView
+        }
+
         scrollView.hasVerticalScroller = true
         scrollView.hasHorizontalScroller = true
         scrollView.autohidesScrollers = true
         scrollView.drawsBackground = true
         scrollView.borderType = .noBorder
 
-        let contentSize = scrollView.contentSize
-        let textStorage = NSTextStorage()
-        let layoutManager = NSLayoutManager()
-        textStorage.addLayoutManager(layoutManager)
-        let textContainer = NSTextContainer(containerSize: NSSize(
-            width: editorSettings.lineWrapping ? contentSize.width : CGFloat.greatestFiniteMagnitude,
-            height: CGFloat.greatestFiniteMagnitude
-        ))
-        textContainer.widthTracksTextView = editorSettings.lineWrapping
-        layoutManager.addTextContainer(textContainer)
-
-        let textView = NSTextView(frame: NSRect(origin: .zero, size: contentSize), textContainer: textContainer)
-        textView.isEditable = true
-        textView.isSelectable = true
         textView.allowsUndo = true
         textView.isRichText = false
         textView.usesFindBar = true
@@ -43,14 +34,14 @@ struct CodeEditorView: NSViewRepresentable {
         textView.smartInsertDeleteEnabled = false
 
         // Appearance
-        textView.backgroundColor = NSColor(red: 0.16, green: 0.16, blue: 0.21, alpha: 1) // #282a36
+        textView.backgroundColor = NSColor(red: 0.16, green: 0.16, blue: 0.21, alpha: 1)
         textView.insertionPointColor = .white
         textView.selectedTextAttributes = [
             .backgroundColor: NSColor(red: 0.27, green: 0.28, blue: 0.35, alpha: 1)
         ]
         textView.textContainerInset = NSSize(width: 8, height: 8)
 
-        // Default font
+        // Font
         let font = NSFont.monospacedSystemFont(ofSize: CGFloat(editorSettings.fontSize), weight: .regular)
         textView.font = font
         textView.typingAttributes = [
@@ -58,12 +49,20 @@ struct CodeEditorView: NSViewRepresentable {
             .foregroundColor: NSColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1)
         ]
 
-        // Sizing
-        textView.minSize = NSSize(width: 0, height: 0)
-        textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
-        textView.isVerticallyResizable = true
-        textView.isHorizontallyResizable = !editorSettings.lineWrapping
-        textView.autoresizingMask = editorSettings.lineWrapping ? [.width] : []
+        // Horizontal scroll (no wrapping) setup
+        if !editorSettings.lineWrapping {
+            textView.isHorizontallyResizable = true
+            textView.autoresizingMask = [.height]
+            textView.textContainer?.widthTracksTextView = false
+            textView.textContainer?.containerSize = NSSize(
+                width: CGFloat.greatestFiniteMagnitude,
+                height: CGFloat.greatestFiniteMagnitude
+            )
+            textView.maxSize = NSSize(
+                width: CGFloat.greatestFiniteMagnitude,
+                height: CGFloat.greatestFiniteMagnitude
+            )
+        }
 
         // Line numbers
         let lineNumberView = LineNumberRulerView(textView: textView, settings: editorSettings)
@@ -71,7 +70,6 @@ struct CodeEditorView: NSViewRepresentable {
         scrollView.hasVerticalRuler = editorSettings.showLineNumbers
         scrollView.rulersVisible = editorSettings.showLineNumbers
 
-        scrollView.documentView = textView
         scrollView.backgroundColor = textView.backgroundColor
 
         textView.delegate = context.coordinator
