@@ -5,26 +5,10 @@ struct EditorPaneView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            editorTabBar
-            Divider()
             toolbar
             Divider()
             editorContent
         }
-    }
-
-    // MARK: - Editor Tab Bar
-
-    private var editorTabBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 0) {
-                ForEach(appState.editorTabs) { tab in
-                    EditorTabItemView(tab: tab)
-                }
-            }
-        }
-        .frame(height: 28)
-        .background(Color(NSColor.controlBackgroundColor))
     }
 
     // MARK: - Toolbar
@@ -116,50 +100,5 @@ struct EditorPaneView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-    }
-}
-
-// MARK: - EditorTabItemView
-
-struct EditorTabItemView: View {
-    @ObservedObject var tab: EditorTab
-    @EnvironmentObject var appState: AppState
-
-    private var isActive: Bool { tab.id == appState.activeEditorTabID }
-
-    var body: some View {
-        HStack(spacing: 4) {
-            Image(nsImage: NSWorkspace.shared.icon(forFile: tab.url.path))
-                .resizable()
-                .frame(width: 12, height: 12)
-
-            Text(tab.fileName)
-                .font(.system(size: 11, weight: isActive ? .medium : .regular))
-                .lineLimit(1)
-                .foregroundColor(isActive ? .primary : .secondary)
-
-            if tab.isDirty {
-                Circle()
-                    .fill(Color.orange)
-                    .frame(width: 5, height: 5)
-            }
-
-            Button(action: { appState.closeEditorTab(tab.id) }) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 7, weight: .bold))
-                    .foregroundColor(.secondary)
-            }
-            .buttonStyle(.plain)
-            .opacity(isActive ? 1 : 0)
-        }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 5)
-        .background(
-            isActive
-                ? Color(NSColor.windowBackgroundColor)
-                : Color.clear
-        )
-        .contentShape(Rectangle())
-        .onTapGesture { appState.selectEditorTab(tab.id) }
     }
 }

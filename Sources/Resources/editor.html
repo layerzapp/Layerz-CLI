@@ -94,6 +94,10 @@
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/yaml/yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/toml/toml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/ruby/ruby.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/sql/sql.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/php/php.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/dockerfile/dockerfile.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/lua/lua.min.js"></script>
 
   <!-- Addons: editing -->
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/display/autorefresh.min.js"></script>
@@ -289,8 +293,15 @@
       'md': 'markdown', 'markdown': 'markdown',
       // Query
       'sql': 'text/x-sql',
+      // PHP
+      'php': 'application/x-httpd-php',
+      // Docker
+      'dockerfile': 'dockerfile',
+      // Lua
+      'lua': 'lua',
       // Plain
       'txt': 'text/plain', 'log': 'text/plain',
+      'env': 'text/plain', 'gitignore': 'text/plain',
     };
     return map[ext.toLowerCase()] || 'text/plain';
   }
