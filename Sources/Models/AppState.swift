@@ -36,11 +36,17 @@ class AppState: ObservableObject {
     }
     var isDirty: Bool {
         get { activeEditorTab?.isDirty ?? false }
-        set { activeEditorTab?.isDirty = newValue ?? false }
+        set {
+            activeEditorTab?.isDirty = newValue
+            objectWillChange.send()
+        }
     }
     var isMarkdownPreview: Bool {
         get { activeEditorTab?.isMarkdownPreview ?? false }
-        set { activeEditorTab?.isMarkdownPreview = newValue ?? false }
+        set {
+            activeEditorTab?.isMarkdownPreview = newValue
+            objectWillChange.send()
+        }
     }
 
     enum FileViewMode { case code, image, pdf, info }

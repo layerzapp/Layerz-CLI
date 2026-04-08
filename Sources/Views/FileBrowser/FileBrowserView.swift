@@ -73,9 +73,9 @@ struct FileBrowserView: View {
     private var fileList: some View {
         List(items, id: \.path) { item in
             FileItemRow(item: item)
+                .contentShape(Rectangle())
                 .onTapGesture(count: 2) { handleDoubleTap(item) }
                 .onTapGesture(count: 1) { handleSingleTap(item) }
-                .contentShape(Rectangle())
         }
         .listStyle(.inset)
     }
