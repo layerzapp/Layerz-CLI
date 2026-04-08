@@ -44,11 +44,8 @@ struct CodeEditorView: NSViewRepresentable {
     }
 
     private func loadEditor(in wv: WKWebView) {
-        // Load editor.html as a string via loadHTMLString so that CDN scripts
-        // (CodeMirror, language modes) are not blocked by file:// security policy.
-        if let url = Bundle.main.url(forResource: "editor", withExtension: "html"),
-           let html = try? String(contentsOf: url, encoding: .utf8) {
-            wv.loadHTMLString(html, baseURL: URL(string: "https://cdn.jsdelivr.net"))
+        if let url = Bundle.main.url(forResource: "editor", withExtension: "html") {
+            wv.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         } else {
             wv.loadHTMLString(fallbackHTML, baseURL: nil)
         }
