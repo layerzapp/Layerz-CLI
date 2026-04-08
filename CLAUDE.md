@@ -62,15 +62,20 @@ zsh chpwd → OSC 7 이스케이프 → SwiftTerm 파싱 → Coordinator 콜백 
 
 | 파일 | 역할 |
 |---|---|
-| `AppState.swift` | 전체 앱 공유 상태. currentDirectory, openedFile, fileContent |
-| `ConsoleApp.swift` | `@main` 진입점. WindowGroup, 메뉴 커맨드 (Cmd+S) |
-| `ContentView.swift` | 루트 HSplitView (Terminal \| FileBrowser \| Editor) |
-| `TerminalPaneView.swift` | SwiftTerm NSViewRepresentable 래퍼. ZDOTDIR 설정, OSC 7 처리 |
-| `FileBrowserView.swift` | 파일 목록 SwiftUI List. FileItem 모델 포함 |
-| `EditorPaneView.swift` | 에디터 툴바 (저장 상태, 파일명, MD 토글) |
-| `CodeEditorView.swift` | WKWebView + CodeMirror. 콘텐츠 동기화 로직 |
+| `AppState.swift` | 전체 앱 공유 상태. currentDirectory, openedFile, fileContent, 탭 관리 |
+| `EditorSettings.swift` | 에디터 환경 설정 (폰트 크기, 테마, 탭 크기 등). UserDefaults 영속화 |
+| `TerminalTab.swift` | 터미널 탭 모델. 각 탭은 독립 터미널 세션 |
+| `ConsoleApp.swift` | `@main` 진입점. WindowGroup, Settings, 메뉴 커맨드 |
+| `ContentView.swift` | 루트 HSplitView + 탭 바 (Terminal \| FileBrowser \| Editor) |
+| `TerminalPaneView.swift` | SwiftTerm NSViewRepresentable 래퍼. ZDOTDIR, OSC 7, 입력소스 전환 |
+| `FileBrowserView.swift` | 파일 목록 SwiftUI List. FileItem 모델, DirectoryWatcher 포함 |
+| `EditorPaneView.swift` | 에디터 툴바 + FileViewMode 분기 (code/image/pdf) |
+| `CodeEditorView.swift` | WKWebView + CodeMirror. 콘텐츠 동기화, 설정 적용 |
 | `MarkdownPreviewView.swift` | WKWebView + marked.js HTML 렌더러 |
-| `editor.html` | CodeMirror 5 에디터 HTML (CDN 로드, 폴백 포함) |
+| `ImagePreviewView.swift` | NSScrollView + NSImageView 이미지 미리보기 |
+| `PDFPreviewView.swift` | PDFKit 기반 PDF 미리보기 |
+| `SettingsView.swift` | 에디터 환경 설정 UI (Cmd+,) |
+| `editor.html` | CodeMirror 5 에디터 HTML (검색, 접기, 다중 테마 지원) |
 | `project.yml` | XcodeGen 설정. 패키지 의존성 및 빌드 설정 |
 
 ---

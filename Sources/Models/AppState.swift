@@ -13,6 +13,14 @@ class AppState: ObservableObject {
     @Published var isDirty: Bool = false
     @Published var isMarkdownPreview: Bool = false
 
+    // MARK: - Terminal Tabs
+    @Published var tabs: [TerminalTab]
+    @Published var activeTabID: UUID
+
+    var activeTabIndex: Int {
+        tabs.firstIndex { $0.id == activeTabID } ?? 0
+    }
+
     var openedFileName: String { openedFile?.lastPathComponent ?? "" }
     var fileExtension: String { openedFile?.pathExtension.lowercased() ?? "" }
     var isMarkdownFile: Bool { ["md", "markdown"].contains(fileExtension) }
@@ -35,12 +43,36 @@ class AppState: ObservableObject {
     }
 
     init() {
+        let initialTab = TerminalTab()
+        self.tabs = [initialTab]
+        self.activeTabID = initialTab.id
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleSaveNotification),
             name: .saveCurrentFile,
             object: nil
         )
+    }
+
+    func addTab() {
+        let tab = TerminalTab()
+        tabs.append(tab)
+        activeTabID = tab.id
+    }
+
+    func closeTab(_ id: UUID) {
+        guard tabs.count > 1 else { return }
+        if let idx = tabs.firstIndex(where: { $0.id == id }) {
+            tabs.remove(at: idx)
+            if activeTabID == id {
+                activeTabID = tabs[min(idx, tabs.count - 1)].id
+            }
+        }
+    }
+
+    func selectTab(_ id: UUID) {
+        activeTabID = id
     }
 
     @objc private func handleSaveNotification() {
