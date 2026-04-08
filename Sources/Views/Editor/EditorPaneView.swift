@@ -37,30 +37,32 @@ struct EditorPaneView: View {
 
             Spacer()
 
-            // Markdown toggle
-            if appState.isMarkdownFile {
-                Picker("", selection: $appState.isMarkdownPreview) {
-                    Text("Edit").tag(false)
-                    Text("Preview").tag(true)
+            if appState.fileViewMode == .code {
+                // Markdown toggle
+                if appState.isMarkdownFile {
+                    Picker("", selection: $appState.isMarkdownPreview) {
+                        Text("Edit").tag(false)
+                        Text("Preview").tag(true)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 120)
+                    .controlSize(.small)
                 }
-                .pickerStyle(.segmented)
-                .frame(width: 120)
-                .controlSize(.small)
-            }
 
-            // Save button
-            Button(action: appState.saveFile) {
-                HStack(spacing: 3) {
-                    Image(systemName: "square.and.arrow.down")
-                        .font(.system(size: 11))
-                    Text("Save")
-                        .font(.system(size: 11))
+                // Save button
+                Button(action: appState.saveFile) {
+                    HStack(spacing: 3) {
+                        Image(systemName: "square.and.arrow.down")
+                            .font(.system(size: 11))
+                        Text("Save")
+                            .font(.system(size: 11))
+                    }
                 }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                .disabled(!appState.isDirty)
+                .keyboardShortcut("s", modifiers: .command)
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-            .disabled(!appState.isDirty)
-            .keyboardShortcut("s", modifiers: .command)
 
             // Close button
             Button(action: appState.closeFile) {
@@ -79,12 +81,21 @@ struct EditorPaneView: View {
 
     @ViewBuilder
     private var editorContent: some View {
-        if appState.isMarkdownPreview {
-            MarkdownPreviewView()
+        switch appState.fileViewMode {
+        case .image:
+            ImagePreviewView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            CodeEditorView()
+        case .pdf:
+            PDFPreviewView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .code:
+            if appState.isMarkdownPreview {
+                MarkdownPreviewView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                CodeEditorView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
         }
     }
 }

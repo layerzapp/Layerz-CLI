@@ -17,6 +17,23 @@ class AppState: ObservableObject {
     var fileExtension: String { openedFile?.pathExtension.lowercased() ?? "" }
     var isMarkdownFile: Bool { ["md", "markdown"].contains(fileExtension) }
 
+    /// Determines how the editor pane should display the opened file.
+    enum FileViewMode {
+        case code
+        case image
+        case pdf
+    }
+
+    private static let imageExtensions: Set<String> = [
+        "png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif", "webp", "heic", "ico", "svg"
+    ]
+
+    var fileViewMode: FileViewMode {
+        if Self.imageExtensions.contains(fileExtension) { return .image }
+        if fileExtension == "pdf" { return .pdf }
+        return .code
+    }
+
     init() {
         NotificationCenter.default.addObserver(
             self,
@@ -31,6 +48,17 @@ class AppState: ObservableObject {
     }
 
     func openFile(_ url: URL) {
+        let ext = url.pathExtension.lowercased()
+
+        // Binary file types: just set the URL, no text content needed
+        if Self.imageExtensions.contains(ext) || ext == "pdf" {
+            openedFile = url
+            fileContent = ""
+            isDirty = false
+            isMarkdownPreview = false
+            return
+        }
+
         guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
         openedFile = url
         fileContent = content
