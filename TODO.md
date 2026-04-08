@@ -12,7 +12,7 @@
 - [x] console 에 focus 가 가면, 자동으로 키보드 입력 언어를 영어로 바꾸기.
 - [ ] 파일별로 git 상태 표시
 - [ ] git integration
-- [ ] 열리는 파일을 tab 으로 표시. 선택한 모든 파일이 열린다.
+- [x] 열리는 파일을 tab 으로 표시. 선택한 모든 파일이 열린다.
 - [ ] pdf viewer 확인. PDFKit 사용.
 - [ ] image viewer 작동 확인. image 는 center fit 되어야 함. 이미지 크기가 viewer 영역 크기보다 작으면 center. 확대/축소 가능.
 - [x] tab 이 바뀔 때, folder 보기도 해당 tab 의 경로로 바뀌어야 함.

@@ -15,7 +15,7 @@ struct ContentView: View {
             FileBrowserView()
                 .frame(minWidth: 200, idealWidth: 260, maxWidth: 380, maxHeight: .infinity)
 
-            if appState.openedFile != nil {
+            if !appState.editorTabs.isEmpty {
                 EditorPaneView()
                     .frame(minWidth: 380, maxWidth: .infinity, maxHeight: .infinity)
             }

@@ -15,10 +15,48 @@ class AppState: ObservableObject {
             }
         }
     }
-    @Published var openedFile: URL? = nil
-    @Published var fileContent: String = ""
-    @Published var isDirty: Bool = false
-    @Published var isMarkdownPreview: Bool = false
+
+    // MARK: - Editor Tabs
+    @Published var editorTabs: [EditorTab] = []
+    @Published var activeEditorTabID: UUID?
+
+    var activeEditorTab: EditorTab? {
+        guard let id = activeEditorTabID else { return nil }
+        return editorTabs.first { $0.id == id }
+    }
+
+    // Computed compatibility properties
+    var openedFile: URL? { activeEditorTab?.url }
+    var openedFileName: String { activeEditorTab?.fileName ?? "" }
+    var fileExtension: String { activeEditorTab?.fileExtension ?? "" }
+    var isMarkdownFile: Bool { activeEditorTab?.isMarkdownFile ?? false }
+    var fileContent: String {
+        get { activeEditorTab?.content ?? "" }
+        set { activeEditorTab?.content = newValue }
+    }
+    var isDirty: Bool {
+        get { activeEditorTab?.isDirty ?? false }
+        set { activeEditorTab?.isDirty = newValue ?? false }
+    }
+    var isMarkdownPreview: Bool {
+        get { activeEditorTab?.isMarkdownPreview ?? false }
+        set { activeEditorTab?.isMarkdownPreview = newValue ?? false }
+    }
+
+    enum FileViewMode { case code, image, pdf }
+
+    static let imageExtensions: Set<String> = [
+        "png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif", "webp", "heic", "ico", "svg"
+    ]
+
+    var fileViewMode: FileViewMode {
+        guard let tab = activeEditorTab else { return .code }
+        switch tab.viewMode {
+        case .image: return .image
+        case .pdf: return .pdf
+        case .code: return .code
+        }
+    }
 
     // MARK: - Terminal Tabs
     @Published var tabs: [TerminalTab]
@@ -28,26 +66,8 @@ class AppState: ObservableObject {
         tabs.firstIndex { $0.id == activeTabID } ?? 0
     }
 
-    var openedFileName: String { openedFile?.lastPathComponent ?? "" }
-    var fileExtension: String { openedFile?.pathExtension.lowercased() ?? "" }
-    var isMarkdownFile: Bool { ["md", "markdown"].contains(fileExtension) }
-
-    /// Determines how the editor pane should display the opened file.
-    enum FileViewMode {
-        case code
-        case image
-        case pdf
-    }
-
-    private static let imageExtensions: Set<String> = [
-        "png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif", "webp", "heic", "ico", "svg"
-    ]
-
-    var fileViewMode: FileViewMode {
-        if Self.imageExtensions.contains(fileExtension) { return .image }
-        if fileExtension == "pdf" { return .pdf }
-        return .code
-    }
+    // MARK: - Selected file (for highlight in file browser)
+    @Published var selectedFilePath: String? = nil
 
     init() {
         let initialTab = TerminalTab()
@@ -61,6 +81,8 @@ class AppState: ObservableObject {
             object: nil
         )
     }
+
+    // MARK: - Terminal Tab Management
 
     func addTab() {
         let tab = TerminalTab()
@@ -79,56 +101,87 @@ class AppState: ObservableObject {
     }
 
     func selectTab(_ id: UUID) {
-        // Save current directory to the outgoing tab
         if let outgoing = tabs.first(where: { $0.id == activeTabID }) {
             outgoing.currentDirectory = currentDirectory
         }
         activeTabID = id
-        // Restore current directory from the incoming tab
         if let incoming = tabs.first(where: { $0.id == id }) {
             currentDirectory = incoming.currentDirectory
         }
     }
 
+    // MARK: - Editor Tab Management
+
+    func openFile(_ url: URL) {
+        // If already open, just switch to it
+        if let existing = editorTabs.first(where: { $0.url == url }) {
+            activeEditorTabID = existing.id
+            objectWillChange.send()
+            return
+        }
+
+        let ext = url.pathExtension.lowercased()
+        let isBinary = Self.imageExtensions.contains(ext) || ext == "pdf"
+
+        let content: String
+        if isBinary {
+            content = ""
+        } else {
+            guard let text = try? String(contentsOf: url, encoding: .utf8) else { return }
+            content = text
+        }
+
+        let tab = EditorTab(url: url, content: content)
+        editorTabs.append(tab)
+        activeEditorTabID = tab.id
+        selectedFilePath = url.path
+    }
+
+    func closeEditorTab(_ id: UUID) {
+        guard let idx = editorTabs.firstIndex(where: { $0.id == id }) else { return }
+        editorTabs.remove(at: idx)
+        if activeEditorTabID == id {
+            if editorTabs.isEmpty {
+                activeEditorTabID = nil
+                selectedFilePath = nil
+            } else {
+                let newIdx = min(idx, editorTabs.count - 1)
+                activeEditorTabID = editorTabs[newIdx].id
+                selectedFilePath = editorTabs[newIdx].url.path
+            }
+        }
+    }
+
+    func selectEditorTab(_ id: UUID) {
+        activeEditorTabID = id
+        if let tab = editorTabs.first(where: { $0.id == id }) {
+            selectedFilePath = tab.url.path
+        }
+        objectWillChange.send()
+    }
+
+    // MARK: - File Operations
+
     @objc private func handleSaveNotification() {
         saveFile()
     }
 
-    func openFile(_ url: URL) {
-        let ext = url.pathExtension.lowercased()
-
-        // Binary file types: just set the URL, no text content needed
-        if Self.imageExtensions.contains(ext) || ext == "pdf" {
-            openedFile = url
-            fileContent = ""
-            isDirty = false
-            isMarkdownPreview = false
-            return
-        }
-
-        guard let content = try? String(contentsOf: url, encoding: .utf8) else { return }
-        openedFile = url
-        fileContent = content
-        isDirty = false
-        isMarkdownPreview = false
-    }
-
     func saveFile() {
-        guard let url = openedFile else { return }
-        try? fileContent.write(to: url, atomically: true, encoding: .utf8)
-        isDirty = false
+        guard let tab = activeEditorTab else { return }
+        try? tab.content.write(to: tab.url, atomically: true, encoding: .utf8)
+        tab.isDirty = false
+        objectWillChange.send()
     }
 
     func closeFile() {
-        openedFile = nil
-        fileContent = ""
-        isDirty = false
-        isMarkdownPreview = false
+        guard let id = activeEditorTabID else { return }
+        closeEditorTab(id)
     }
 
     func updateContent(_ content: String) {
-        guard content != fileContent else { return }
-        fileContent = content
-        isDirty = true
+        guard let tab = activeEditorTab, content != tab.content else { return }
+        tab.content = content
+        tab.isDirty = true
+        objectWillChange.send()
     }
 }

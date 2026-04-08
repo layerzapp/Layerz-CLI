@@ -143,7 +143,7 @@ struct FileItemRow: View {
     @EnvironmentObject var appState: AppState
 
     private var isSelected: Bool {
-        appState.openedFile?.path == item.path
+        appState.selectedFilePath == item.path
     }
 
     var body: some View {
