@@ -15,8 +15,20 @@ struct CodeEditorView: NSViewRepresentable {
         scrollView.hasHorizontalScroller = true
         scrollView.autohidesScrollers = true
         scrollView.drawsBackground = true
+        scrollView.borderType = .noBorder
 
-        let textView = NSTextView()
+        let contentSize = scrollView.contentSize
+        let textStorage = NSTextStorage()
+        let layoutManager = NSLayoutManager()
+        textStorage.addLayoutManager(layoutManager)
+        let textContainer = NSTextContainer(containerSize: NSSize(
+            width: editorSettings.lineWrapping ? contentSize.width : CGFloat.greatestFiniteMagnitude,
+            height: CGFloat.greatestFiniteMagnitude
+        ))
+        textContainer.widthTracksTextView = editorSettings.lineWrapping
+        layoutManager.addTextContainer(textContainer)
+
+        let textView = NSTextView(frame: NSRect(origin: .zero, size: contentSize), textContainer: textContainer)
         textView.isEditable = true
         textView.isSelectable = true
         textView.allowsUndo = true
@@ -46,18 +58,12 @@ struct CodeEditorView: NSViewRepresentable {
             .foregroundColor: NSColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1)
         ]
 
-        // Layout
+        // Sizing
+        textView.minSize = NSSize(width: 0, height: 0)
         textView.maxSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         textView.isVerticallyResizable = true
         textView.isHorizontallyResizable = !editorSettings.lineWrapping
         textView.autoresizingMask = editorSettings.lineWrapping ? [.width] : []
-        if let tc = textView.textContainer {
-            tc.widthTracksTextView = editorSettings.lineWrapping
-            tc.containerSize = NSSize(
-                width: editorSettings.lineWrapping ? 0 : CGFloat.greatestFiniteMagnitude,
-                height: CGFloat.greatestFiniteMagnitude
-            )
-        }
 
         // Line numbers
         let lineNumberView = LineNumberRulerView(textView: textView, settings: editorSettings)
