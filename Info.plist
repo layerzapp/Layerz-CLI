@@ -22,11 +22,12 @@
 	<string>1</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>13.0</string>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<true/>
-	</dict>
+	<key>NSDesktopFolderUsageDescription</key>
+	<string>Console needs access to browse and edit files on your Desktop.</string>
+	<key>NSDocumentsFolderUsageDescription</key>
+	<string>Console needs access to browse and edit files in Documents.</string>
+	<key>NSDownloadsFolderUsageDescription</key>
+	<string>Console needs access to browse and edit files in Downloads.</string>
 	<key>NSHumanReadableDescription</key>
 	<string>Terminal and File Browser for macOS</string>
 	<key>NSSupportsAutomaticTermination</key>
