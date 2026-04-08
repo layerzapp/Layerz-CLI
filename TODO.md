@@ -5,7 +5,7 @@
 - [x] editor pane 의 종류로, 이미지 미리보기 추가
 - [x] eidtor pane 의 종류로, pdf 미리보기 추가
 - [x] editor pane 에 다른 파일 종류도 추후도 다룰 수 있는 구조 만들기.
-- [ ] code editor 고도화
+- [x] code editor 고도화
 - [ ] tab 설정 가능. 여러개의 console 을 하나의 윈도우에서 사용할 수 있어야 한다. 모든 탭은 활성화되어 작동하여야 한다.
 - [ ] tmux 처럼 작동하는지 확인
 - [ ] cmux 처럼 작동하는지 확인

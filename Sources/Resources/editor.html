@@ -36,6 +36,31 @@
     /* Active-line subtle highlight */
     .CodeMirror-activeline-background { background: rgba(255,255,255,0.04) !important; }
 
+    /* Search / dialog styling */
+    .CodeMirror-dialog {
+      background: #21222c; color: #f8f8f2; border-bottom: 1px solid #44475a;
+      padding: 4px 8px; font-size: 12px;
+    }
+    .CodeMirror-dialog input {
+      background: #282a36; color: #f8f8f2; border: 1px solid #44475a;
+      border-radius: 3px; padding: 2px 6px; font-size: 12px; outline: none;
+    }
+    .CodeMirror-dialog input:focus { border-color: #6272a4; }
+    .CodeMirror-dialog button {
+      background: #44475a; color: #f8f8f2; border: none;
+      border-radius: 3px; padding: 2px 8px; margin-left: 4px; cursor: pointer;
+      font-size: 11px;
+    }
+    .CodeMirror-dialog button:hover { background: #6272a4; }
+
+    /* Fold gutter */
+    .CodeMirror-foldgutter { width: 14px; }
+    .CodeMirror-foldgutter-open,
+    .CodeMirror-foldgutter-folded { cursor: pointer; color: #6272a4; }
+
+    /* Match highlight */
+    .cm-matchhighlight { background: rgba(255, 255, 0, 0.15); }
+
     /* Fallback textarea when CodeMirror is unavailable (offline) */
     #fallback {
       display: none;
@@ -70,12 +95,36 @@
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/toml/toml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/mode/ruby/ruby.min.js"></script>
 
-  <!-- Addons -->
+  <!-- Addons: editing -->
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/display/autorefresh.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/edit/matchbrackets.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/edit/closetag.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/edit/matchtags.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/selection/active-line.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/comment/comment.min.js"></script>
+
+  <!-- Addons: search & navigation -->
   <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/search/searchcursor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/search/search.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/search/jump-to-line.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/dialog/dialog.min.js"></script>
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/dialog/dialog.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/search/matchesonscrollbar.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/scroll/annotatescrollbar.min.js"></script>
+
+  <!-- Addons: code folding -->
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/fold/foldcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/fold/foldgutter.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/fold/brace-fold.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/fold/indent-fold.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/fold/comment-fold.min.js"></script>
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/fold/foldgutter.min.css">
+
+  <!-- Addons: highlight -->
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/addon/search/match-highlighter.min.js"></script>
 
   <script>
   'use strict';
@@ -131,9 +180,24 @@
       styleActiveLine:  true,
       matchBrackets:    true,
       autoCloseBrackets: true,
+      autoCloseTags:    true,
+      matchTags:        { bothTags: true },
+      foldGutter:       true,
+      gutters:          ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+      highlightSelectionMatches: { showToken: true, annotateScrollbar: true },
       extraKeys: {
-        'Cmd-S':  function () { notifySave(); },
-        'Ctrl-S': function () { notifySave(); }
+        'Cmd-S':    function () { notifySave(); },
+        'Ctrl-S':   function () { notifySave(); },
+        'Cmd-/':    'toggleComment',
+        'Ctrl-/':   'toggleComment',
+        'Cmd-G':    'jumpToLine',
+        'Ctrl-G':   'jumpToLine',
+        'Cmd-F':    'findPersistent',
+        'Ctrl-F':   'findPersistent',
+        'Cmd-H':    'replace',
+        'Ctrl-H':   'replace',
+        'Shift-Cmd-H': 'replaceAll',
+        'Shift-Ctrl-H': 'replaceAll'
       }
     });
 
