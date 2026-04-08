@@ -1,0 +1,190 @@
+import SwiftUI
+import AppKit
+
+struct FileBrowserView: View {
+    @EnvironmentObject var appState: AppState
+    @State private var items: [FileItem] = []
+    @State private var showHidden: Bool = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            toolbar
+            Divider()
+            fileList
+        }
+        .onChange(of: appState.currentDirectory) { _ in loadItems() }
+        .onChange(of: showHidden) { _ in loadItems() }
+        .onAppear { loadItems() }
+    }
+
+    // MARK: - Subviews
+
+    private var toolbar: some View {
+        HStack(spacing: 6) {
+            Button(action: goUp) {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 11, weight: .semibold))
+            }
+            .buttonStyle(.plain)
+            .disabled(appState.currentDirectory.path == "/")
+            .help("Parent directory")
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(appState.currentDirectory.lastPathComponent.isEmpty
+                     ? "/"
+                     : appState.currentDirectory.lastPathComponent)
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(1)
+                Text(abbreviatedPath)
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                    .truncationMode(.head)
+            }
+
+            Spacer()
+
+            Button(action: { showHidden.toggle() }) {
+                Image(systemName: showHidden ? "eye.slash" : "eye")
+                    .font(.system(size: 11))
+            }
+            .buttonStyle(.plain)
+            .help(showHidden ? "Hide hidden files" : "Show hidden files")
+
+            Button(action: loadItems) {
+                Image(systemName: "arrow.clockwise")
+                    .font(.system(size: 11))
+            }
+            .buttonStyle(.plain)
+            .help("Refresh")
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(Color(NSColor.windowBackgroundColor))
+    }
+
+    private var fileList: some View {
+        List(items, id: \.path) { item in
+            FileItemRow(item: item)
+                .onTapGesture(count: 2) { handleDoubleTap(item) }
+                .onTapGesture(count: 1) { handleSingleTap(item) }
+                .contentShape(Rectangle())
+        }
+        .listStyle(.inset)
+    }
+
+    // MARK: - Helpers
+
+    private var abbreviatedPath: String {
+        let path = appState.currentDirectory.path
+        let home = NSHomeDirectory()
+        return path.hasPrefix(home) ? "~" + path.dropFirst(home.count) : path
+    }
+
+    private func goUp() {
+        appState.currentDirectory = appState.currentDirectory.deletingLastPathComponent()
+    }
+
+    private func handleSingleTap(_ item: FileItem) {
+        guard !item.isDirectory else { return }
+        appState.openFile(URL(fileURLWithPath: item.path))
+    }
+
+    private func handleDoubleTap(_ item: FileItem) {
+        if item.isDirectory {
+            appState.currentDirectory = URL(fileURLWithPath: item.path)
+        } else {
+            NSWorkspace.shared.open(URL(fileURLWithPath: item.path))
+        }
+    }
+
+    private func loadItems() {
+        let dir = appState.currentDirectory
+        let includeHidden = showHidden
+        DispatchQueue.global(qos: .userInitiated).async {
+            let fm = FileManager.default
+            guard let names = try? fm.contentsOfDirectory(atPath: dir.path) else { return }
+
+            let filtered = includeHidden ? names : names.filter { !$0.hasPrefix(".") }
+            let result: [FileItem] = filtered.compactMap { name in
+                let path = dir.appendingPathComponent(name).path
+                var isDir: ObjCBool = false
+                guard fm.fileExists(atPath: path, isDirectory: &isDir) else { return nil }
+                let attrs = try? fm.attributesOfItem(atPath: path)
+                return FileItem(
+                    name: name,
+                    path: path,
+                    isDirectory: isDir.boolValue,
+                    size: attrs?[.size] as? Int64 ?? 0,
+                    modified: attrs?[.modificationDate] as? Date
+                )
+            }
+            .sorted {
+                if $0.isDirectory != $1.isDirectory { return $0.isDirectory }
+                return $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+            }
+
+            DispatchQueue.main.async { self.items = result }
+        }
+    }
+}
+
+// MARK: - FileItemRow
+
+struct FileItemRow: View {
+    let item: FileItem
+    @EnvironmentObject var appState: AppState
+
+    private var isSelected: Bool {
+        appState.openedFile?.path == item.path
+    }
+
+    var body: some View {
+        HStack(spacing: 7) {
+            Image(nsImage: item.icon)
+                .resizable()
+                .interpolation(.high)
+                .frame(width: 16, height: 16)
+
+            Text(item.name)
+                .font(.system(size: 12))
+                .lineLimit(1)
+                .foregroundColor(isSelected ? .accentColor : .primary)
+
+            Spacer()
+
+            if !item.isDirectory {
+                Text(item.formattedSize)
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(.vertical, 2)
+        .padding(.horizontal, 4)
+        .background(
+            RoundedRectangle(cornerRadius: 4)
+                .fill(isSelected ? Color.accentColor.opacity(0.12) : Color.clear)
+        )
+    }
+}
+
+// MARK: - FileItem Model
+
+struct FileItem: Identifiable {
+    let id = UUID()
+    let name: String
+    let path: String
+    let isDirectory: Bool
+    let size: Int64
+    let modified: Date?
+
+    var icon: NSImage { NSWorkspace.shared.icon(forFile: path) }
+
+    var formattedSize: String {
+        let bytes = size
+        if bytes < 1_024 { return "\(bytes) B" }
+        if bytes < 1_048_576 { return String(format: "%.0f KB", Double(bytes) / 1_024) }
+        if bytes < 1_073_741_824 { return String(format: "%.1f MB", Double(bytes) / 1_048_576) }
+        return String(format: "%.1f GB", Double(bytes) / 1_073_741_824)
+    }
+}

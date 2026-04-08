@@ -1,0 +1,43 @@
+name: Console
+options:
+  bundleIdPrefix: com.layerz
+  deploymentTarget:
+    macOS: "13.0"
+  createIntermediateGroups: true
+
+packages:
+  SwiftTerm:
+    url: https://github.com/migueldeicaza/SwiftTerm
+    from: "1.2.4"
+
+targets:
+  Console:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources
+        excludes:
+          - "Resources/**"
+    resources:
+      - path: Sources/Resources/editor.html
+    info:
+      path: Info.plist
+      properties:
+        CFBundleDisplayName: Console
+        NSHumanReadableDescription: "Terminal and File Browser for macOS"
+        LSMinimumSystemVersion: "13.0"
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+        NSSupportsAutomaticTermination: false
+        NSSupportsSuddenTermination: false
+    dependencies:
+      - package: SwiftTerm
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.layerz.console
+      SWIFT_VERSION: "5"
+      MACOSX_DEPLOYMENT_TARGET: "13.0"
+      CODE_SIGN_STYLE: Automatic
+      ENABLE_HARDENED_RUNTIME: NO
+      SWIFT_STRICT_CONCURRENCY: minimal

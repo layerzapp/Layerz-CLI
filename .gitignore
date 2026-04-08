@@ -1,0 +1,39 @@
+# ─── Xcode ──────────────────────────────────────────────────────
+# XcodeGen으로 생성되므로 트래킹 불필요
+Console.xcodeproj/
+
+# DerivedData / build artifacts
+DerivedData/
+build/
+*.o
+*.d
+
+# Xcode 사용자별 설정
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+
+# Xcode SwiftPM 캐시
+.swiftpm/
+*.resolved
+
+# ─── macOS ───────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Spotlight / Finder
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# ─── 임시 파일 ────────────────────────────────────────────────────
+*.swp
+*.swo
+*~
+.tmp/
+
+# ─── 빌드 환경 ────────────────────────────────────────────────────
+.env
+.env.local
