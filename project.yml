@@ -28,6 +28,9 @@ targets:
           NSAllowsArbitraryLoads: true
         NSSupportsAutomaticTermination: false
         NSSupportsSuddenTermination: false
+        NSDesktopFolderUsageDescription: "Console needs access to browse and edit files on your Desktop."
+        NSDocumentsFolderUsageDescription: "Console needs access to browse and edit files in Documents."
+        NSDownloadsFolderUsageDescription: "Console needs access to browse and edit files in Downloads."
     dependencies:
       - package: SwiftTerm
     settings:
