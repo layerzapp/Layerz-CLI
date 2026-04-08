@@ -46,7 +46,8 @@ struct TerminalPaneView: NSViewRepresentable {
                 executable: "/bin/zsh",
                 args: [],
                 environment: env.map { "\($0.key)=\($0.value)" },
-                execName: "zsh"
+                execName: "zsh",
+                currentDirectory: NSHomeDirectory()
             )
         }
 
