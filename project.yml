@@ -18,8 +18,8 @@ targets:
       - path: Sources
         excludes:
           - "Resources/**"
-    resources:
       - path: Sources/Resources/editor.html
+        buildPhase: resources
     info:
       path: Info.plist
       properties:
