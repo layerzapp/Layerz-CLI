@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftTerm
 import AppKit
+import Carbon.HIToolbox
 
 struct TerminalPaneView: NSViewRepresentable {
     @EnvironmentObject var appState: AppState
@@ -23,7 +24,9 @@ struct TerminalPaneView: NSViewRepresentable {
         tv.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         tv.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
 
+        context.coordinator.terminalView = tv
         context.coordinator.start(tv)
+        context.coordinator.installInputSourceMonitor()
         return tv
     }
 
@@ -35,9 +38,17 @@ struct TerminalPaneView: NSViewRepresentable {
 
     class Coordinator: NSObject, LocalProcessTerminalViewDelegate {
         let appState: AppState
+        weak var terminalView: LocalProcessTerminalView?
+        private var eventMonitor: Any?
 
         init(appState: AppState) {
             self.appState = appState
+        }
+
+        deinit {
+            if let monitor = eventMonitor {
+                NSEvent.removeMonitor(monitor)
+            }
         }
 
         func start(_ tv: LocalProcessTerminalView) {
@@ -56,6 +67,31 @@ struct TerminalPaneView: NSViewRepresentable {
                 execName: "zsh",
                 currentDirectory: NSHomeDirectory()
             )
+        }
+
+        /// Monitor mouse clicks to detect when the terminal gains focus,
+        /// then switch to ASCII input source.
+        func installInputSourceMonitor() {
+            eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown]) { [weak self] event in
+                guard let self, let tv = self.terminalView else { return event }
+                // Check if the click landed inside the terminal view
+                let point = event.locationInWindow
+                if let window = tv.window,
+                   event.window == window {
+                    let localPoint = tv.convert(point, from: nil)
+                    if tv.bounds.contains(localPoint) {
+                        self.switchToASCIIInputSource()
+                    }
+                }
+                return event
+            }
+        }
+
+        private func switchToASCIIInputSource() {
+            guard let sources = TISCreateASCIICapableInputSourceList()?.takeRetainedValue()
+                    as? [TISInputSource],
+                  let asciiSource = sources.first else { return }
+            TISSelectInputSource(asciiSource)
         }
 
         /// Create a temporary ZDOTDIR with a .zshrc that:
