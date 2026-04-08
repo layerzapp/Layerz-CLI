@@ -5,6 +5,7 @@ struct FileBrowserView: View {
     @EnvironmentObject var appState: AppState
     @State private var items: [FileItem] = []
     @State private var showHidden: Bool = false
+    @StateObject private var watcher = DirectoryWatcher()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -12,9 +13,15 @@ struct FileBrowserView: View {
             Divider()
             fileList
         }
-        .onChange(of: appState.currentDirectory) { _ in loadItems() }
+        .onChange(of: appState.currentDirectory) { newDir in
+            watcher.watch(newDir) { loadItems() }
+            loadItems()
+        }
         .onChange(of: showHidden) { _ in loadItems() }
-        .onAppear { loadItems() }
+        .onAppear {
+            watcher.watch(appState.currentDirectory) { loadItems() }
+            loadItems()
+        }
     }
 
     // MARK: - Subviews
@@ -166,6 +173,39 @@ struct FileItemRow: View {
                 .fill(isSelected ? Color.accentColor.opacity(0.12) : Color.clear)
         )
     }
+}
+
+// MARK: - DirectoryWatcher
+
+/// Watches a directory for changes using kqueue (DispatchSource).
+class DirectoryWatcher: ObservableObject {
+    private var source: DispatchSourceFileSystemObject?
+    private var fileDescriptor: Int32 = -1
+
+    func watch(_ directory: URL, onChange: @escaping () -> Void) {
+        stop()
+
+        fileDescriptor = open(directory.path, O_EVTONLY)
+        guard fileDescriptor >= 0 else { return }
+
+        source = DispatchSource.makeFileSystemObjectSource(
+            fileDescriptor: fileDescriptor,
+            eventMask: .write,
+            queue: .main
+        )
+
+        source?.setEventHandler { onChange() }
+        source?.setCancelHandler { [fd = fileDescriptor] in close(fd) }
+        source?.resume()
+    }
+
+    func stop() {
+        source?.cancel()
+        source = nil
+        fileDescriptor = -1
+    }
+
+    deinit { stop() }
 }
 
 // MARK: - FileItem Model
