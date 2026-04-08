@@ -43,7 +43,7 @@ class AppState: ObservableObject {
         set { activeEditorTab?.isMarkdownPreview = newValue ?? false }
     }
 
-    enum FileViewMode { case code, image, pdf }
+    enum FileViewMode { case code, image, pdf, info }
 
     static let imageExtensions: Set<String> = [
         "png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif", "webp", "heic", "ico", "svg"
@@ -55,6 +55,7 @@ class AppState: ObservableObject {
         case .image: return .image
         case .pdf: return .pdf
         case .code: return .code
+        case .info: return .info
         }
     }
 
@@ -124,14 +125,18 @@ class AppState: ObservableObject {
         let isBinary = Self.imageExtensions.contains(ext) || ext == "pdf"
 
         let content: String
+        var viewMode: EditorTab.ViewMode? = nil
         if isBinary {
             content = ""
-        } else {
-            guard let text = try? String(contentsOf: url, encoding: .utf8) else { return }
+        } else if let text = try? String(contentsOf: url, encoding: .utf8) {
             content = text
+        } else {
+            // Can't read as text (unknown binary) — show file info panel
+            content = ""
+            viewMode = .info
         }
 
-        let tab = EditorTab(url: url, content: content)
+        let tab = EditorTab(url: url, content: content, viewMode: viewMode)
         editorTabs.append(tab)
         activeEditorTabID = tab.id
         selectedFilePath = url.path

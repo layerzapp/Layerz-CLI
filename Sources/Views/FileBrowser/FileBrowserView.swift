@@ -93,8 +93,12 @@ struct FileBrowserView: View {
     }
 
     private func handleSingleTap(_ item: FileItem) {
-        guard !item.isDirectory else { return }
-        appState.openFile(URL(fileURLWithPath: item.path))
+        // Always update selection highlight
+        appState.selectedFilePath = item.path
+
+        if !item.isDirectory {
+            appState.openFile(URL(fileURLWithPath: item.path))
+        }
     }
 
     private func handleDoubleTap(_ item: FileItem) {

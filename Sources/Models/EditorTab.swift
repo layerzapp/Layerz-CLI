@@ -24,17 +24,21 @@ class EditorTab: Identifiable, ObservableObject {
     }()
 
     enum ViewMode {
-        case code, image, pdf
+        case code, image, pdf, info
     }
 
-    var viewMode: ViewMode {
+    @Published var viewMode: ViewMode
+
+    private func detectViewMode() -> ViewMode {
         if Self.imageExtensions.contains(fileExtension) { return .image }
         if fileExtension == "pdf" { return .pdf }
         return .code
     }
 
-    init(url: URL, content: String = "") {
+    init(url: URL, content: String = "", viewMode: ViewMode? = nil) {
         self.url = url
         self.content = content
+        self.viewMode = .code // temporary, will be set below
+        self.viewMode = viewMode ?? detectViewMode()
     }
 }

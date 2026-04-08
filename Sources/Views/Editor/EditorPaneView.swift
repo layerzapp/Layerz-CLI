@@ -104,6 +104,9 @@ struct EditorPaneView: View {
         case .pdf:
             PDFPreviewView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .info:
+            FileInfoView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         case .code:
             if appState.isMarkdownPreview {
                 MarkdownPreviewView()

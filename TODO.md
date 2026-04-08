@@ -17,4 +17,4 @@
 - [ ] image viewer 작동 확인. image 는 center fit 되어야 함. 이미지 크기가 viewer 영역 크기보다 작으면 center. 확대/축소 가능.
 - [x] tab 이 바뀔 때, folder 보기도 해당 tab 의 경로로 바뀌어야 함.
 - [ ] editor 작동 및 설정 확인.
-- [ ] file 리스트 선택했을 때, 부자연스러움. preview 가 열리지 않는 경우라도 select 되었다는 표시를 배로 해준다.
+- [x] file 리스트 선택했을 때, 부자연스러움. preview 가 열리지 않는 경우라도 select 되었다는 표시를 배로 해준다.
