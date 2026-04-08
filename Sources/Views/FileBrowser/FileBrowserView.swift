@@ -116,6 +116,8 @@ struct FileBrowserView: View {
             let fm = FileManager.default
             guard let names = try? fm.contentsOfDirectory(atPath: dir.path) else { return }
 
+            let gitStatuses = loadGitStatus(for: dir)
+
             let filtered = includeHidden ? names : names.filter { !$0.hasPrefix(".") }
             let result: [FileItem] = filtered.compactMap { name in
                 let path = dir.appendingPathComponent(name).path
@@ -127,7 +129,8 @@ struct FileBrowserView: View {
                     path: path,
                     isDirectory: isDir.boolValue,
                     size: attrs?[.size] as? Int64 ?? 0,
-                    modified: attrs?[.modificationDate] as? Date
+                    modified: attrs?[.modificationDate] as? Date,
+                    gitStatus: gitStatuses[path] ?? .none
                 )
             }
             .sorted {
@@ -150,6 +153,12 @@ struct FileItemRow: View {
         appState.selectedFilePath == item.path
     }
 
+    private var gitStatusColor: Color {
+        if isSelected { return .accentColor }
+        if item.gitStatus != .none { return item.gitStatus.color }
+        return .primary
+    }
+
     var body: some View {
         HStack(spacing: 7) {
             Image(nsImage: item.icon)
@@ -160,9 +169,15 @@ struct FileItemRow: View {
             Text(item.name)
                 .font(.system(size: 12))
                 .lineLimit(1)
-                .foregroundColor(isSelected ? .accentColor : .primary)
+                .foregroundColor(gitStatusColor)
 
             Spacer()
+
+            if item.gitStatus != .none {
+                Text(item.gitStatus.symbol)
+                    .font(.system(size: 9, weight: .bold, design: .monospaced))
+                    .foregroundColor(item.gitStatus.color)
+            }
 
             if !item.isDirectory {
                 Text(item.formattedSize)
@@ -221,6 +236,7 @@ struct FileItem: Identifiable {
     let isDirectory: Bool
     let size: Int64
     let modified: Date?
+    let gitStatus: GitFileStatus
 
     var icon: NSImage { NSWorkspace.shared.icon(forFile: path) }
 
@@ -231,4 +247,110 @@ struct FileItem: Identifiable {
         if bytes < 1_073_741_824 { return String(format: "%.1f MB", Double(bytes) / 1_048_576) }
         return String(format: "%.1f GB", Double(bytes) / 1_073_741_824)
     }
+}
+
+// MARK: - Git Status
+
+enum GitFileStatus: String {
+    case none = ""
+    case modified = "M"
+    case added = "A"
+    case deleted = "D"
+    case renamed = "R"
+    case untracked = "?"
+    case conflicted = "U"
+
+    var color: Color {
+        switch self {
+        case .modified: return .orange
+        case .added, .untracked: return .green
+        case .deleted: return .red
+        case .renamed: return .blue
+        case .conflicted: return .purple
+        case .none: return .clear
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .modified: return "M"
+        case .added: return "A"
+        case .deleted: return "D"
+        case .renamed: return "R"
+        case .untracked: return "U"
+        case .conflicted: return "C"
+        case .none: return ""
+        }
+    }
+}
+
+/// Runs `git status --porcelain` and returns a dictionary mapping
+/// file paths (relative to repo root) to their status.
+func loadGitStatus(for directory: URL) -> [String: GitFileStatus] {
+    // Find git repo root
+    let rootProcess = Process()
+    rootProcess.executableURL = URL(fileURLWithPath: "/usr/bin/git")
+    rootProcess.arguments = ["-C", directory.path, "rev-parse", "--show-toplevel"]
+    let rootPipe = Pipe()
+    rootProcess.standardOutput = rootPipe
+    rootProcess.standardError = Pipe()
+    try? rootProcess.run()
+    rootProcess.waitUntilExit()
+    guard rootProcess.terminationStatus == 0 else { return [:] }
+
+    let rootData = rootPipe.fileHandleForReading.readDataToEndOfFile()
+    let repoRoot = String(data: rootData, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    guard !repoRoot.isEmpty else { return [:] }
+
+    // Get status
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/git")
+    process.arguments = ["-C", repoRoot, "status", "--porcelain", "-uall"]
+    let pipe = Pipe()
+    process.standardOutput = pipe
+    process.standardError = Pipe()
+    try? process.run()
+    process.waitUntilExit()
+    guard process.terminationStatus == 0 else { return [:] }
+
+    let data = pipe.fileHandleForReading.readDataToEndOfFile()
+    guard let output = String(data: data, encoding: .utf8) else { return [:] }
+
+    var statuses: [String: GitFileStatus] = [:]
+    let repoRootURL = URL(fileURLWithPath: repoRoot)
+
+    for line in output.split(separator: "\n", omittingEmptySubsequences: true) {
+        guard line.count >= 4 else { continue }
+        let index = line.index(line.startIndex, offsetBy: 0)
+        let worktree = line.index(line.startIndex, offsetBy: 1)
+        let filePath = String(line.dropFirst(3))
+
+        let fullPath = repoRootURL.appendingPathComponent(filePath).path
+
+        // Use worktree status primarily, fall back to index status
+        let wtChar = String(line[worktree])
+        let idxChar = String(line[index])
+
+        let status: GitFileStatus
+        if wtChar == "?" { status = .untracked }
+        else if wtChar == "M" || idxChar == "M" { status = .modified }
+        else if wtChar == "A" || idxChar == "A" { status = .added }
+        else if wtChar == "D" || idxChar == "D" { status = .deleted }
+        else if wtChar == "R" || idxChar == "R" { status = .renamed }
+        else if wtChar == "U" || idxChar == "U" { status = .conflicted }
+        else { continue }
+
+        statuses[fullPath] = status
+
+        // Also mark parent directories as modified
+        var parent = URL(fileURLWithPath: fullPath).deletingLastPathComponent()
+        while parent.path.hasPrefix(repoRoot) && parent.path != repoRoot {
+            if statuses[parent.path] == nil {
+                statuses[parent.path] = .modified
+            }
+            parent = parent.deletingLastPathComponent()
+        }
+    }
+
+    return statuses
 }
