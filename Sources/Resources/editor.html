@@ -8,9 +8,17 @@
   <!-- CodeMirror 5 core -->
   <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/lib/codemirror.min.css">
-  <!-- Dracula theme -->
+  <!-- Themes -->
   <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/theme/dracula.min.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/theme/material-darker.min.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/theme/monokai.min.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/theme/nord.min.css">
+  <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/codemirror@5.65.17/theme/solarized.min.css">
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -166,6 +174,24 @@
   window.getContent = function () {
     if (isFallback) return document.getElementById('fallback').value;
     return cm ? cm.getValue() : '';
+  };
+
+  /** Apply editor settings from Swift. */
+  window.applySettings = function (opts) {
+    if (isFallback) {
+      var ta = document.getElementById('fallback');
+      if (opts.fontSize) ta.style.fontSize = opts.fontSize + 'px';
+      return;
+    }
+    if (!cm) return;
+    if (opts.fontSize) {
+      document.querySelector('.CodeMirror').style.fontSize = opts.fontSize + 'px';
+      cm.refresh();
+    }
+    if (opts.tabSize !== undefined) cm.setOption('tabSize', opts.tabSize);
+    if (opts.lineWrapping !== undefined) cm.setOption('lineWrapping', opts.lineWrapping);
+    if (opts.lineNumbers !== undefined) cm.setOption('lineNumbers', opts.lineNumbers);
+    if (opts.theme) cm.setOption('theme', opts.theme);
   };
 
   // ─── Extension → CodeMirror mode mapping ─────────────────────────────────────

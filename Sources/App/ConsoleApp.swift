@@ -3,11 +3,13 @@ import SwiftUI
 @main
 struct ConsoleApp: App {
     @StateObject private var appState = AppState()
+    @StateObject private var editorSettings = EditorSettings()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(appState)
+                .environmentObject(editorSettings)
                 .frame(minWidth: 960, minHeight: 640)
         }
         .windowStyle(.titleBar)
@@ -21,6 +23,11 @@ struct ConsoleApp: App {
                 }
                 .keyboardShortcut("s", modifiers: .command)
             }
+        }
+
+        Settings {
+            SettingsView()
+                .environmentObject(editorSettings)
         }
     }
 }
