@@ -11,11 +11,18 @@ struct TerminalPaneView: NSViewRepresentable {
 
     func makeNSView(context: Context) -> LocalProcessTerminalView {
         let tv = LocalProcessTerminalView(frame: .zero)
+
+        // Set a font with good glyph coverage (Menlo supports many Unicode symbols)
+        let fontSize: CGFloat = 13
+        tv.font = NSFont(name: "Menlo", size: fontSize)
+            ?? NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
+
         tv.processDelegate = context.coordinator
         tv.setContentHuggingPriority(.defaultLow, for: .horizontal)
         tv.setContentHuggingPriority(.defaultLow, for: .vertical)
         tv.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         tv.setContentCompressionResistancePriority(.defaultLow, for: .vertical)
+
         context.coordinator.start(tv)
         return tv
     }
