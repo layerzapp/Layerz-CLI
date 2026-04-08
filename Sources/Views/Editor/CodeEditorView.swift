@@ -41,12 +41,14 @@ struct CodeEditorView: NSViewRepresentable {
         ]
         textView.textContainerInset = NSSize(width: 8, height: 8)
 
-        // Font
+        // Font & text color
         let font = NSFont.monospacedSystemFont(ofSize: CGFloat(editorSettings.fontSize), weight: .regular)
+        let textColor = NSColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1) // #f8f8f2
         textView.font = font
+        textView.textColor = textColor
         textView.typingAttributes = [
             .font: font,
-            .foregroundColor: NSColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1)
+            .foregroundColor: textColor
         ]
 
         // Horizontal scroll (no wrapping) setup
@@ -88,7 +90,16 @@ struct CodeEditorView: NSViewRepresentable {
         if coord.lastOpenedFile != appState.openedFile {
             coord.lastOpenedFile = appState.openedFile
             coord.isUpdatingFromModel = true
-            textView.string = appState.fileContent
+
+            let text = appState.fileContent
+            let font = NSFont.monospacedSystemFont(ofSize: CGFloat(coord.settings.fontSize), weight: .regular)
+            let defaultColor = NSColor(red: 0.97, green: 0.97, blue: 0.95, alpha: 1)
+            let attrs: [NSAttributedString.Key: Any] = [
+                .font: font,
+                .foregroundColor: defaultColor
+            ]
+            textView.textStorage?.setAttributedString(NSAttributedString(string: text, attributes: attrs))
+
             coord.isUpdatingFromModel = false
             coord.applySyntaxHighlighting()
             textView.scrollToBeginningOfDocument(nil)
