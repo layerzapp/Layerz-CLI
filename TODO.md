@@ -13,7 +13,7 @@
 - [ ] 파일별로 git 상태 표시
 - [ ] git integration
 - [x] 열리는 파일을 tab 으로 표시. 선택한 모든 파일이 열린다.
-- [ ] pdf viewer 확인. PDFKit 사용.
+- [x] pdf viewer 확인. PDFKit 사용.
 - [x] image viewer 작동 확인. image 는 center fit 되어야 함. 이미지 크기가 viewer 영역 크기보다 작으면 center. 확대/축소 가능.
 - [x] tab 이 바뀔 때, folder 보기도 해당 tab 의 경로로 바뀌어야 함.
 - [ ] editor 작동 및 설정 확인.
