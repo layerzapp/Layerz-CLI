@@ -56,6 +56,7 @@ struct TerminalPaneView: NSViewRepresentable {
             var env = ProcessInfo.processInfo.environment
             env["TERM"] = "xterm-256color"
             env["COLORTERM"] = "truecolor"
+            env["TERM_PROGRAM"] = "Console"
             env["LANG"] = "en_US.UTF-8"
             env["LC_ALL"] = "en_US.UTF-8"
             env["ZDOTDIR"] = zdotdir
