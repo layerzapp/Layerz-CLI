@@ -5,6 +5,7 @@ import Carbon.HIToolbox
 
 struct TerminalPaneView: NSViewRepresentable {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var settings: EditorSettings
 
     func makeCoordinator() -> Coordinator {
         Coordinator(appState: appState)
@@ -13,9 +14,8 @@ struct TerminalPaneView: NSViewRepresentable {
     func makeNSView(context: Context) -> LocalProcessTerminalView {
         let tv = LocalProcessTerminalView(frame: .zero)
 
-        // Set a font with good glyph coverage (Menlo supports many Unicode symbols)
-        let fontSize: CGFloat = 13
-        tv.font = NSFont(name: "Menlo", size: fontSize)
+        let fontSize = CGFloat(settings.terminalFontSize)
+        tv.font = NSFont(name: settings.terminalFontName, size: fontSize)
             ?? NSFont.monospacedSystemFont(ofSize: fontSize, weight: .regular)
 
         tv.processDelegate = context.coordinator
@@ -31,7 +31,11 @@ struct TerminalPaneView: NSViewRepresentable {
     }
 
     func updateNSView(_ nsView: LocalProcessTerminalView, context: Context) {
-        // Terminal manages its own state; no updates needed from SwiftUI
+        let desired = NSFont(name: settings.terminalFontName, size: CGFloat(settings.terminalFontSize))
+            ?? NSFont.monospacedSystemFont(ofSize: CGFloat(settings.terminalFontSize), weight: .regular)
+        if nsView.font != desired {
+            nsView.font = desired
+        }
     }
 
     // MARK: - Coordinator
