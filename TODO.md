@@ -20,3 +20,5 @@
 - [x] file 리스트 선택했을 때, 부자연스러움. preview 가 열리지 않는 경우라도 select 되었다는 표시를 배로 해준다.
 - [ ] oh-my-zsh 설정한 폰트들이 제대로 렌더링되지 않음.
 - [ ] 입력창에서 shift-enter 했을 때 줄바꿈이 되어야 함.
+- [ ] ignore .bkit, TODO.md
+- [ ] README.md, CLAUDE.md 영어로
