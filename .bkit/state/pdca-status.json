@@ -1,9 +1,95 @@
 {
-  "version": "2.0",
-  "lastUpdated": "2026-04-08T01:10:36.032Z",
-  "activeFeatures": [],
-  "primaryFeature": null,
-  "features": {},
+  "version": "3.0",
+  "lastUpdated": "2026-04-08T07:45:06.738Z",
+  "activeFeatures": [
+    "Terminal",
+    "Models",
+    "Editor",
+    "FileBrowser",
+    "App",
+    "Views"
+  ],
+  "primaryFeature": "Terminal",
+  "features": {
+    "Terminal": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-08T01:20:12.783Z",
+        "lastUpdated": "2026-04-08T01:33:48.382Z"
+      },
+      "lastFile": "/Users/jaeyoung/Developer/Layerz/console/Sources/Views/Terminal/TerminalPaneView.swift"
+    },
+    "Models": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-08T01:20:59.926Z",
+        "lastUpdated": "2026-04-08T07:44:58.511Z"
+      },
+      "lastFile": "/Users/jaeyoung/Developer/Layerz/console/Sources/Models/EditorSettings.swift"
+    },
+    "Editor": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-08T01:21:06.121Z",
+        "lastUpdated": "2026-04-08T07:41:01.924Z"
+      },
+      "lastFile": "/Users/jaeyoung/Developer/Layerz/console/Sources/Views/Editor/CodeEditorView.swift"
+    },
+    "FileBrowser": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-08T01:22:54.376Z",
+        "lastUpdated": "2026-04-08T05:59:48.856Z"
+      },
+      "lastFile": "/Users/jaeyoung/Developer/Layerz/console/Sources/Views/FileBrowser/FileBrowserView.swift"
+    },
+    "App": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-08T01:23:50.872Z",
+        "lastUpdated": "2026-04-08T01:32:37.610Z"
+      },
+      "lastFile": "/Users/jaeyoung/Developer/Layerz/console/Sources/App/ConsoleApp.swift"
+    },
+    "Views": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-08T01:23:57.446Z",
+        "lastUpdated": "2026-04-08T07:45:06.738Z"
+      },
+      "lastFile": "/Users/jaeyoung/Developer/Layerz/console/Sources/Views/SettingsView.swift"
+    }
+  },
   "pipeline": {
     "currentPhase": 1,
     "level": "Dynamic",
@@ -12,7 +98,432 @@
   "session": {
     "startedAt": "2026-04-08T01:10:36.032Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-08T01:10:36.032Z"
+    "lastActivity": "2026-04-08T07:45:06.738Z"
   },
-  "history": []
+  "history": [
+    {
+      "timestamp": "2026-04-08T01:20:12.783Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:20:59.926Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:21:06.121Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:21:15.139Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:21:23.628Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:21:33.927Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:21:42.501Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:22:54.376Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:23:02.024Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:23:40.912Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:23:50.872Z",
+      "feature": "App",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:23:57.446Z",
+      "feature": "Views",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:24:54.641Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:26:21.041Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:26:38.152Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:27:17.637Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:27:55.139Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:28:19.444Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:29:06.976Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:31:12.339Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:31:22.592Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:31:29.418Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:31:47.970Z",
+      "feature": "Views",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:32:12.115Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:32:16.947Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:32:37.610Z",
+      "feature": "App",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T01:33:48.382Z",
+      "feature": "Terminal",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:21:50.655Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:21:56.643Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:22:02.951Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:22:46.742Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:23:11.845Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:23:37.570Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:23:47.875Z",
+      "feature": "Views",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:23:56.517Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:25:00.281Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:25:19.238Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:25:24.456Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:25:36.186Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:25:44.061Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:25:57.029Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:26:18.118Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:27:32.223Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:28:19.952Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:30:11.808Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:30:31.497Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:30:40.088Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:30:46.862Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:59:40.581Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T05:59:48.856Z",
+      "feature": "FileBrowser",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:07:56.373Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:08:13.775Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:08:24.518Z",
+      "feature": "Views",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:08:34.345Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:08:39.250Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:08:46.630Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:08:51.752Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:16:21.713Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:39:21.075Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:49:01.684Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T06:58:36.861Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T07:01:03.539Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T07:07:23.058Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T07:07:37.137Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T07:12:46.798Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T07:41:01.924Z",
+      "feature": "Editor",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T07:44:58.511Z",
+      "feature": "Models",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-08T07:45:06.738Z",
+      "feature": "Views",
+      "phase": "do",
+      "action": "updated"
+    }
+  ],
+  "stateMachine": {
+    "defaultWorkflow": "default",
+    "activeWorkflows": {},
+    "totalTransitions": 0
+  },
+  "automation": {
+    "globalLevel": 2,
+    "trustScore": 40,
+    "pendingApprovals": 0,
+    "lastGateResult": null
+  },
+  "team": {
+    "enabled": true,
+    "stateFile": ".bkit/runtime/agent-state.json",
+    "eventsFile": ".bkit/runtime/agent-events.jsonl"
+  }
 }
