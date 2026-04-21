@@ -1,19 +1,16 @@
 # ─── Xcode ──────────────────────────────────────────────────────
-# XcodeGen으로 생성되므로 트래킹 불필요
-Console.xcodeproj/
-
 # DerivedData / build artifacts
 DerivedData/
 build/
 *.o
 *.d
 
-# Xcode 사용자별 설정
+# Xcode user-specific settings
 *.xcuserstate
 xcuserdata/
 *.xcscmblueprint
 
-# Xcode SwiftPM 캐시
+# Xcode SwiftPM cache
 .swiftpm/
 *.resolved
 
@@ -28,13 +25,13 @@ xcuserdata/
 .Trashes
 .fseventsd
 
-# ─── 임시 파일 ────────────────────────────────────────────────────
+# ─── Temp files ────────────────────────────────────────────────────
 *.swp
 *.swo
 *~
 .tmp/
 
-# ─── 빌드 환경 ────────────────────────────────────────────────────
+# ─── Build environment ────────────────────────────────────────────
 .env
 .env.local
 .bkit

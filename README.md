@@ -44,8 +44,7 @@ Embeds a real PTY-based shell — a single `cd` instantly syncs the file browser
 ### Requirements
 
 - macOS 13 Ventura or later
-- Xcode 15 or later
-- [XcodeGen](https://github.com/yonaskolb/XcodeGen) (`brew install xcodegen`)
+- Xcode 16 or later
 
 ### Quick Start
 
@@ -54,10 +53,7 @@ Embeds a real PTY-based shell — a single `cd` instantly syncs the file browser
 git clone <repo-url>
 cd console
 
-# 2. Generate Xcode project
-xcodegen generate
-
-# 3. Open in Xcode and build
+# 2. Open in Xcode and build
 open Console.xcodeproj
 ```
 
@@ -76,7 +72,7 @@ xcodebuild -project Console.xcodeproj -scheme Console -configuration Debug build
 
 ```
 console/
-├── project.yml                        # XcodeGen config (source of truth)
+├── Console.xcodeproj/                 # Xcode project (folder references)
 ├── Info.plist                         # App metadata
 ├── Sources/
 │   ├── App/
@@ -95,11 +91,10 @@ console/
 │   │       └── MarkdownPreviewView.swift # marked.js Markdown renderer
 │   └── Resources/
 │       └── editor.html                # CodeMirror 5 bundle (CDN)
-└── Console.xcodeproj/                 # Generated Xcode project (xcodegen)
 ```
 
-> `Console.xcodeproj` can be regenerated with `xcodegen generate`.
-> Do not modify it manually — edit `project.yml` instead.
+> The project uses Xcode's folder references (file system synchronized groups).
+> New files added to `Sources/` are automatically included in the build.
 
 ---
 
@@ -156,7 +151,6 @@ JS → Swift : window.webkit.messageHandlers.contentChanged.postMessage(text)
 | Shell | `/bin/zsh` (PTY via SwiftTerm) |
 | Code Editor | Native NSTextView + SyntaxHighlighter |
 | Markdown Renderer | [marked.js](https://marked.js.org/) via WKWebView |
-| Project Generation | [XcodeGen](https://github.com/yonaskolb/XcodeGen) |
 | Package Manager | Swift Package Manager |
 
 ---

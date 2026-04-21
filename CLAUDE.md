@@ -9,10 +9,10 @@ This file is a guide for AI agents to quickly understand the codebase and contri
 
 - **Platform**: macOS 13+ only (AppKit + SwiftUI hybrid)
 - **Language**: Swift 5 (Xcode Swift 6.2 compiler, `SWIFT_STRICT_CONCURRENCY: minimal`)
-- **Build System**: XcodeGen (`project.yml`) → `Console.xcodeproj`
-- **Packages**: SwiftTerm (SPM), CodeMirror 5 (CDN), marked.js (CDN)
+- **Build System**: Xcode project with folder references (file system synchronized groups)
+- **Packages**: SwiftTerm (SPM), marked.js (CDN)
 
-> `Console.xcodeproj` is a generated artifact. **Never modify it directly** — edit `project.yml` and run `xcodegen generate`.
+> The project uses Xcode's folder references. New files added to `Sources/` are automatically included in the build. No 3rd-party project generation tools (XcodeGen, etc.) are used.
 
 ---
 
@@ -73,7 +73,7 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 | `ImagePreviewView.swift` | NSScrollView + NSImageView image preview |
 | `PDFPreviewView.swift` | PDFKit-based PDF preview |
 | `SettingsView.swift` | Editor preferences UI (Cmd+,) |
-| `project.yml` | XcodeGen config. Package dependencies and build settings |
+| `Console.xcodeproj` | Xcode project with folder references. SPM dependencies and build settings |
 
 ---
 
@@ -91,10 +91,10 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 - When adding a new language mode, update both the CDN `<script>` tag and the `extensionToMode()` map
 - Always test the fallback (`activateFallback()`) path as well
 
-### XcodeGen
-- New source files under `Sources/` are automatically included
-- New resources (images, HTML, etc.) must be explicitly added to the `resources:` section in `project.yml`
-- Adding SPM packages: update both `packages:` and `dependencies:` in `project.yml`
+### Xcode Project
+- The project uses folder references — new files under `Sources/` are automatically included
+- SPM packages are managed directly in Xcode (File > Add Package Dependencies)
+- Do not use XcodeGen or any other 3rd-party project generation tools
 
 ---
 
@@ -114,12 +114,6 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 1. Add a `@Published` property to `AppState.swift`
 2. Access it from related views via `@EnvironmentObject var appState: AppState`
 3. Test scenario: verify state synchronizes correctly across multiple panels
-
-### Regenerating XcodeGen Project
-```bash
-xcodegen generate
-```
-Always close the project in Xcode before running, or run "File > Packages > Resolve Package Versions" in Xcode afterwards.
 
 ---
 
