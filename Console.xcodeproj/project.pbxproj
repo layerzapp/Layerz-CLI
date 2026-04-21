@@ -59,6 +59,7 @@
 			buildPhases = (
 				BF57ADF96683850932A8462A /* Sources */,
 				8B58DBEAE4CF36ED2C618414 /* Frameworks */,
+				AE9D1C2C2F9714A900A0C67F /* Resources */,
 			);
 			buildRules = (
 			);
@@ -83,6 +84,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1620;
+				ORGANIZATIONNAME = Layerz;
 				TargetAttributes = {
 					FEBDBAC8A2BEA291FD4218F3 = {
 						ProvisioningStyle = Automatic;
@@ -90,7 +92,6 @@
 				};
 			};
 			buildConfigurationList = D57F0BA669D3D3462A44289E /* Build configuration list for PBXProject "Console" */;
-			compatibilityVersion = "Xcode 16.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -98,7 +99,6 @@
 				en,
 			);
 			mainGroup = 800588DAB763A56AC5E44F49;
-			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				C7AC277A25EABE4D9C98CC60 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
 			);
@@ -110,6 +110,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		AE9D1C2C2F9714A900A0C67F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		BF57ADF96683850932A8462A /* Sources */ = {
@@ -125,9 +135,10 @@
 		6E1CB8D22A18F6DD84EB361F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = appicon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 20;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -135,7 +146,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.layerz.console;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.layerz.console;
 				SDKROOT = macosx;
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5;
@@ -201,9 +213,10 @@
 		9BF06DFF240F1ACD6178E621 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = appicon;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 20;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -211,7 +224,8 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.layerz.console;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = app.layerz.console;
 				SDKROOT = macosx;
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				SWIFT_VERSION = 5;
