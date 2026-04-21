@@ -11,7 +11,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		ACEAAFA7D3F180159F8B9617 /* Console.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Console.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACEAAFA7D3F180159F8B9617 /* LCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -37,7 +37,7 @@
 		13CF4840EBB415EA67B2A188 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				ACEAAFA7D3F180159F8B9617 /* Console.app */,
+				ACEAAFA7D3F180159F8B9617 /* LCC.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,9 +53,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FEBDBAC8A2BEA291FD4218F3 /* Console */ = {
+		FEBDBAC8A2BEA291FD4218F3 /* LCC */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = D53B97512851E68B87021A91 /* Build configuration list for PBXNativeTarget "Console" */;
+			buildConfigurationList = D53B97512851E68B87021A91 /* Build configuration list for PBXNativeTarget "LCC" */;
 			buildPhases = (
 				BF57ADF96683850932A8462A /* Sources */,
 				8B58DBEAE4CF36ED2C618414 /* Frameworks */,
@@ -68,12 +68,12 @@
 			fileSystemSynchronizedGroups = (
 				A1B2C3D4E5F60718A1B2C3D4 /* Sources */,
 			);
-			name = Console;
+			name = LCC;
 			packageProductDependencies = (
 				E837D3CD3420EDA5247E4E0F /* SwiftTerm */,
 			);
 			productName = Console;
-			productReference = ACEAAFA7D3F180159F8B9617 /* Console.app */;
+			productReference = ACEAAFA7D3F180159F8B9617 /* LCC.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -106,7 +106,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FEBDBAC8A2BEA291FD4218F3 /* Console */,
+				FEBDBAC8A2BEA291FD4218F3 /* LCC */,
 			);
 		};
 /* End PBXProject section */
@@ -141,6 +141,7 @@
 				CURRENT_PROJECT_VERSION = 20;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LCC;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -219,6 +220,7 @@
 				CURRENT_PROJECT_VERSION = 20;
 				ENABLE_HARDENED_RUNTIME = NO;
 				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = LCC;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -298,7 +300,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		D53B97512851E68B87021A91 /* Build configuration list for PBXNativeTarget "Console" */ = {
+		D53B97512851E68B87021A91 /* Build configuration list for PBXNativeTarget "LCC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6E1CB8D22A18F6DD84EB361F /* Debug */,
