@@ -163,8 +163,3 @@ JS → Swift : window.webkit.messageHandlers.contentChanged.postMessage(text)
 - bash / fish shells do not support automatic OSC 7 setup (zsh only)
 - App sandbox is disabled (entitlements must be added for distribution)
 
----
-
-## Future Plans
-
-See `TODO.md`.
