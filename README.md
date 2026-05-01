@@ -45,14 +45,18 @@ Embeds a real PTY-based shell — a single `cd` instantly syncs the file browser
 
 ---
 
-## Build & Run
+## Install
 
-### Requirements
+### Homebrew (Recommended)
 
-- macOS 13 Ventura or later
-- Xcode 16 or later
+```bash
+brew tap layerzapp/tap
+brew install --cask lcc
+```
 
-### Quick Start
+### Build from Source
+
+**Requirements**: macOS 13 Ventura or later, Xcode 16 or later
 
 ```bash
 # 1. Clone the repository
