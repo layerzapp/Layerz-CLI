@@ -1,4 +1,8 @@
-# Console
+![alt text](appicon.png)
+
+# LCC
+
+### Layerz Command Center
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
