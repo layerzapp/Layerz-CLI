@@ -1,5 +1,7 @@
 # Console
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A macOS native terminal + file browser integrated app.
 Embeds a real PTY-based shell — a single `cd` instantly syncs the file browser on the right.
 
