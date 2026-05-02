@@ -27,6 +27,12 @@ struct TerminalPaneView: NSViewRepresentable {
         context.coordinator.terminalView = tv
         context.coordinator.start(tv)
         context.coordinator.installInputSourceMonitor()
+
+        // Make the terminal the first responder so it receives keyboard input immediately
+        DispatchQueue.main.async {
+            tv.window?.makeFirstResponder(tv)
+        }
+
         return tv
     }
 
