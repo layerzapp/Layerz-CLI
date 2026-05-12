@@ -31,12 +31,14 @@ Embeds a real PTY-based shell — a single `cd` instantly syncs the file browser
 
 | Feature | Description |
 |---|---|
-| **PTY Terminal** | Real `/bin/zsh` shell — colors, tab completion, Vim, etc. all work |
+| **PTY Terminal** | Real shell (zsh/bash/fish auto-detected) — colors, tab completion, Vim, etc. all work |
+| **Multi-Shell** | Auto-detects `$SHELL` — zsh, bash, fish all supported with bundled integration scripts |
 | **Directory Sync** | OSC 7 escape sequence on `cd` instantly updates the file browser |
 | **Code Editor** | Native NSTextView — syntax highlighting, line numbers, 15+ languages |
 | **Markdown Preview** | `marked.js`-based rendering, Edit ↔ Preview toggle |
 | **File Browser** | Finder-style, hidden file toggle, NSWorkspace icons |
-| **Offline Fallback** | Editor automatically falls back to plain textarea when CDN is unavailable |
+| **Input Source** | Auto-switches to English input when terminal gains focus |
+| **Terminal Tabs** | Multiple terminal sessions in a single window, all tabs remain active |
 
 ### Supported Languages (Editor Syntax Highlighting)
 
@@ -88,19 +90,28 @@ console/
 │   ├── App/
 │   │   └── ConsoleApp.swift           # @main, Scene, global shortcuts
 │   ├── Models/
-│   │   └── AppState.swift             # Shared state (ObservableObject)
+│   │   ├── AppState.swift             # Shared state (ObservableObject)
+│   │   ├── EditorSettings.swift       # Editor preferences (UserDefaults)
+│   │   └── TerminalTab.swift          # Terminal tab model
 │   ├── Views/
-│   │   ├── ContentView.swift          # HSplitView root layout
+│   │   ├── ContentView.swift          # HSplitView root layout + tab bar
+│   │   ├── SettingsView.swift         # Editor preferences UI (Cmd+,)
 │   │   ├── Terminal/
-│   │   │   └── TerminalPaneView.swift # SwiftTerm wrapper + OSC 7 CWD tracking
+│   │   │   └── TerminalPaneView.swift # SwiftTerm wrapper + multi-shell + OSC 7
 │   │   ├── FileBrowser/
 │   │   │   └── FileBrowserView.swift  # Finder-style file browser
 │   │   └── Editor/
-│   │       ├── EditorPaneView.swift   # Editor toolbar + Save/Close
-│   │       ├── CodeEditorView.swift   # Native NSTextView code editor
-│   │       └── MarkdownPreviewView.swift # marked.js Markdown renderer
+│   │       ├── EditorPaneView.swift   # Editor toolbar + file view mode branching
+│   │       ├── CodeEditorView.swift   # Native NSTextView code editor + syntax highlighting
+│   │       ├── MarkdownPreviewView.swift # marked.js Markdown renderer
+│   │       ├── ImagePreviewView.swift # Image preview (center fit, pinch-to-zoom)
+│   │       ├── PDFPreviewView.swift   # PDFKit-based PDF preview
+│   │       └── FileInfoView.swift     # Info panel for unsupported file types
 │   └── Resources/
-│       └── editor.html                # CodeMirror 5 bundle (CDN)
+│       └── ShellIntegration/          # Bundled shell integration scripts
+│           ├── console-zsh-integration.zsh
+│           ├── console-bash-integration.bash
+│           └── console-fish-integration.fish
 ```
 
 > The project uses Xcode's folder references (file system synchronized groups).
@@ -125,20 +136,12 @@ AppState (ObservableObject)
 
 ```
 User: $ cd ~/Desktop
-  └→ zsh chpwd hook
-       └→ printf '\033]7;file://localhost/Users/.../Desktop\033\\'
+  └→ shell hook (chpwd / PROMPT_COMMAND / --on-variable PWD)
+       └→ OSC 7 escape sequence
             └→ SwiftTerm OSC 7 parsing
                  └→ hostCurrentDirectoryUpdate(directory:)
                       └→ AppState.currentDirectory update
                            └→ FileBrowserView auto-reload
-```
-
-### Editor ↔ Swift Communication
-
-```
-Swift → JS : webView.evaluateJavaScript("setContent(json, ext)")
-JS → Swift : window.webkit.messageHandlers.contentChanged.postMessage(text)
-             window.webkit.messageHandlers.saveRequested.postMessage('')
 ```
 
 ---
@@ -148,7 +151,6 @@ JS → Swift : window.webkit.messageHandlers.contentChanged.postMessage(text)
 | Shortcut | Action |
 |---|---|
 | `Cmd+S` | Save current file |
-| `Cmd+S` (editor focused) | Triggers CodeMirror built-in save |
 
 ---
 
@@ -158,7 +160,7 @@ JS → Swift : window.webkit.messageHandlers.contentChanged.postMessage(text)
 |---|---|
 | UI Framework | SwiftUI + AppKit |
 | Terminal Emulator | [SwiftTerm](https://github.com/migueldeicaza/SwiftTerm) |
-| Shell | `/bin/zsh` (PTY via SwiftTerm) |
+| Shell | Auto-detected `$SHELL` — zsh, bash, fish (PTY via SwiftTerm) |
 | Code Editor | Native NSTextView + SyntaxHighlighter |
 | Markdown Renderer | [marked.js](https://marked.js.org/) via WKWebView |
 | Package Manager | Swift Package Manager |
@@ -167,7 +169,5 @@ JS → Swift : window.webkit.messageHandlers.contentChanged.postMessage(text)
 
 ## Known Limitations
 
-- Markdown preview uses CDN (jsDelivr) — falls back to plain textarea when offline
-- bash / fish shells do not support automatic OSC 7 setup (zsh only)
-- App sandbox is disabled (entitlements must be added for distribution)
+- Markdown preview uses CDN (jsDelivr) for marked.js — requires internet connection
 

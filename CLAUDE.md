@@ -10,7 +10,7 @@ This file is a guide for AI agents to quickly understand the codebase and contri
 - **Platform**: macOS 13+ only (AppKit + SwiftUI hybrid)
 - **Language**: Swift 5 (Xcode Swift 6.2 compiler, `SWIFT_STRICT_CONCURRENCY: minimal`)
 - **Build System**: Xcode project with folder references (file system synchronized groups)
-- **Packages**: SwiftTerm (SPM), marked.js (CDN)
+- **Packages**: SwiftTerm (SPM), marked.js (CDN, Markdown preview only)
 
 > The project uses Xcode's folder references. New files added to `Sources/` are automatically included in the build. No 3rd-party project generation tools (XcodeGen, etc.) are used.
 
@@ -78,6 +78,7 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 | `MarkdownPreviewView.swift` | WKWebView + marked.js HTML renderer |
 | `ImagePreviewView.swift` | NSScrollView + NSImageView image preview |
 | `PDFPreviewView.swift` | PDFKit-based PDF preview |
+| `FileInfoView.swift` | Info panel for unsupported file types (file size, dates, kind) |
 | `SettingsView.swift` | Editor preferences UI (Cmd+,) |
 | `Console.xcodeproj` | Xcode project with folder references. SPM dependencies and build settings |
 
@@ -92,11 +93,6 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 - DispatchQueue rules: file I/O → `.global(qos: .userInitiated)`, UI updates → `.main.async`
 - Prefer `// TODO:` or conditional logging over `print()` in view hierarchy
 
-### Editor HTML/JS
-- Always JSON-encode strings via `JSONEncoder` when passing from Swift → JS
-- When adding a new language mode, update both the CDN `<script>` tag and the `extensionToMode()` map
-- Always test the fallback (`activateFallback()`) path as well
-
 ### Xcode Project
 - The project uses folder references — new files under `Sources/` are automatically included
 - SPM packages are managed directly in Xcode (File > Add Package Dependencies)
@@ -107,8 +103,8 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 ## Common Procedures
 
 ### Adding a New Syntax Highlighting Language
-1. Add CDN `<script>` tag in `editor.html`
-2. Add extension → mode mapping in `extensionToMode()` function in `editor.html`
+1. Add a new `LanguagePattern` entry in `SyntaxHighlighter` (inside `CodeEditorView.swift`)
+2. Add extension → language mapping in the `language(for:)` function
 
 ### Adding a New File Viewer Type (e.g. Image Preview)
 1. Create a new `*PreviewView.swift` in `Sources/Views/Editor/` (`NSViewRepresentable`)
@@ -134,7 +130,7 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 - [x] Editor preferences: font size, theme, tab size, etc.
 - [x] bash / fish shell OSC 7 support
 - [x] Auto-switch to English input on terminal focus (`TISSelectInputSource`)
-- [ ] Bundle CodeMirror CDN resources in the app (full offline support)
+- [ ] Bundle marked.js in the app (full offline Markdown preview)
 
 ---
 
@@ -143,5 +139,4 @@ results are delivered to the UI via `DispatchQueue.main.async`.
 - `TerminalPaneView.updateNSView` only updates font when settings change. SwiftTerm manages its own state.
 - `CodeEditorView.updateNSView` only calls JS when `lastOpenedFile != appState.openedFile`. Calling without this guard resets the cursor mid-typing.
 - `LocalProcessTerminalViewDelegate.processDelegate` is a `weak` reference. Since `Coordinator` is retained by SwiftUI, this is fine. Never assign `Coordinator` to a local variable.
-- `ENABLE_HARDENED_RUNTIME: NO` — development-only setting. Must be changed to YES with proper entitlements for App Store distribution.
-- `NSAllowsArbitraryLoads: true` — required for CodeMirror CDN loading. Can be removed once CDN resources are bundled.
+- `NSAllowsArbitraryLoads: true` — required for marked.js CDN loading (Markdown preview). Can be removed once CDN resources are bundled.
